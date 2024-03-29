@@ -61,10 +61,10 @@ function copyToClipboard() {
     }
   }
 
-  // Check if markdownText is empty
+  // check if markdownText is empty
   if (!markdownText || markdownText.trim() === "") {
     alert("No convo yet.");
-    return; // Exit the function early
+    return;
   }
 
   navigator.clipboard.writeText(markdownText).then(
