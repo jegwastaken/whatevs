@@ -10,20 +10,46 @@
 // ==/UserScript==
 
 function htmlToMD(html) {
-  return html
-    .replace(/<p>/g, "\n\n")
-    .replace(/<\/p>/g, "")
-    .replace(/<b>/g, "**")
-    .replace(/<\/b>/g, "**")
-    .replace(/<i>/g, "_")
-    .replace(/<\/i>/g, "_")
-    .replace(/<code[^>]*>/g, (match) => {
-      const languageMatch = match.match(/class="[^"]*language-([^"]*)"/);
-      return languageMatch ? "\n```" + languageMatch[1] + "\n" : "```";
-    })
-    .replace(/<\/code[^>]*>/g, "```")
-    .replace(/<[^>]*>/g, "")
-    .trim();
+  return (
+    html
+      .replace(/<p>/g, "")
+      .replace(/<\/p>/g, "\n\n")
+      .replace(/<b>/g, "**")
+      .replace(/<\/b>/g, "**")
+      .replace(/<i>/g, "_")
+      .replace(/<\/i>/g, "_")
+
+      // headings
+      .replace(/<h1>(.*?)<\/h1>/g, "# $1\n")
+      .replace(/<h2>(.*?)<\/h2>/g, "## $1\n")
+      .replace(/<h3>(.*?)<\/h3>/g, "### $1\n")
+      .replace(/<h4>(.*?)<\/h4>/g, "#### $1\n")
+      .replace(/<h5>(.*?)<\/h5>/g, "##### $1\n")
+      .replace(/<h6>(.*?)<\/h6>/g, "###### $1\n")
+
+      // TODO: nested lists?
+      // lists
+      .replace(/<ul>(<li>.*?<\/li>)*<\/ul>/gs, (match) => {
+        return match
+          .replace(/<li>(.*?)<\/li>/g, "- $1\n")
+          .replace(/<.*?>/g, "");
+      })
+      .replace(/<ol>(<li>.*?<\/li>)*<\/ol>/gs, (match) => {
+        let index = 1;
+        return match
+          .replace(/<li>(.*?)<\/li>/g, (m, item) => `${index++}. ${item}\n`)
+          .replace(/<.*?>/g, "");
+      })
+
+      // code blocks
+      .replace(/<code[^>]*>/g, (match) => {
+        const languageMatch = match.match(/class="[^"]*language-([^"]*)"/);
+        return languageMatch ? "\n```" + languageMatch[1] + "\n" : "```";
+      })
+      .replace(/<\/code[^>]*>/g, "```")
+      .replace(/<[^>]*>/g, "")
+      .trim()
+  );
 }
 
 function copyToClipboard() {
@@ -55,16 +81,16 @@ function copyToClipboard() {
     if (element.querySelector(".whitespace-pre-wrap")) {
       markdownText += `**${
         element.querySelector("img") ? "You" : "ChatGPT"
-      }**: ${htmlToMD(
+      }**:\n\n${htmlToMD(
         element.querySelector(".whitespace-pre-wrap").innerHTML
       )}\n\n`;
     }
   }
 
-  // check if markdownText is empty
+  // Check if markdownText is empty
   if (!markdownText || markdownText.trim() === "") {
     alert("No convo yet.");
-    return;
+    return; // Exit the function early
   }
 
   navigator.clipboard.writeText(markdownText).then(
