@@ -3,8 +3,8 @@
 // @namespace    http://tampermonkey.net/
 // @version      2024-03-29
 // @description  It's in the name!
-// @author       Me
-// @match        https://chat.openai.com/c/*
+// @author       It's ah-me, Mario!
+// @match        https://chat.openai.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=openai.com
 // @grant        none
 // ==/UserScript==
@@ -31,7 +31,7 @@ function copyToClipboard() {
     (el) => {
       let clonedEl = el.cloneNode(true); // clone each element
 
-      // remove closedParentDivs inside clonedEl
+      // Remove the closedParentDivs that are inside clonedEl
       const closedElements = clonedEl.querySelectorAll('[data-state="closed"]');
       const closedParentDivs = Array.from(closedElements, (el) =>
         el.closest("div")
@@ -49,7 +49,7 @@ function copyToClipboard() {
 
   let markdownText = "";
   for (const element of textElements) {
-    // skip if current element has child with class .text-base
+    // Skip if the current element has a child with the class .text-base
     if (element.querySelector(".text-base")) continue;
 
     if (element.querySelector(".whitespace-pre-wrap")) {
@@ -62,20 +62,21 @@ function copyToClipboard() {
   }
   navigator.clipboard.writeText(markdownText).then(
     function () {
-      console.log("Convo copied to clipboard!");
+      alert("Convo copied to clipboard!");
     },
     function (err) {
-      console.error("Can't copy convo: ", err);
+      alert("Failed to copy convo. Check your browser's console for details.");
+      console.error("Failed to copy convo: ", err);
     }
   );
 }
 
 // create button
 const button = document.createElement("button");
-button.innerHTML = "Copy to Clipboard";
+button.innerHTML = "Copy Convo";
 button.style.position = "fixed";
-button.style.top = "10px";
-button.style.left = "10px";
+button.style.top = "17px";
+button.style.right = "72px";
 
 // attach copy function to button's click event
 button.addEventListener("click", copyToClipboard);
