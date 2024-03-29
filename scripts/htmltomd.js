@@ -60,6 +60,13 @@ function copyToClipboard() {
       )}\n\n`;
     }
   }
+
+  // Check if markdownText is empty
+  if (!markdownText || markdownText.trim() === "") {
+    alert("No convo yet.");
+    return; // Exit the function early
+  }
+
   navigator.clipboard.writeText(markdownText).then(
     function () {
       alert("Convo copied to clipboard!");
