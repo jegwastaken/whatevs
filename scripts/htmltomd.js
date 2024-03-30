@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatGPT to MD
 // @namespace    http://tampermonkey.net/
-// @version      2024-03-29
+// @version      2024-03-30
 // @description  It's in the name!
 // @author       It's ah-me, Mario!
 // @match        https://chat.openai.com/*
@@ -69,7 +69,7 @@ function copyToClipboard() {
     (el) => {
       let clonedEl = el.cloneNode(true); // clone each element
 
-      // Remove the closedParentDivs that are inside clonedEl
+      // remove the closedParentDivs that are inside clonedEl
       const closedElements = clonedEl.querySelectorAll('[data-state="closed"]');
       const closedParentDivs = Array.from(closedElements, (el) =>
         el.closest("div")
@@ -87,7 +87,7 @@ function copyToClipboard() {
 
   let markdownText = "";
   for (const element of textElements) {
-    // Skip if the current element has a child with the class .text-base
+    // skip if the current element has a child with the class .text-base
     if (element.querySelector(".text-base")) continue;
 
     if (element.querySelector(".whitespace-pre-wrap")) {
@@ -99,7 +99,7 @@ function copyToClipboard() {
     }
   }
 
-  // Check if markdownText is empty
+  // check if markdownText is empty
   if (!markdownText || markdownText.trim() === "") {
     alert("No convo yet.");
     return; // Exit the function early
