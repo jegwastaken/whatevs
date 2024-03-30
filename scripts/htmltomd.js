@@ -20,12 +20,12 @@ function htmlToMD(html) {
       .replace(/<\/i>/g, "_")
 
       // headings
-      .replace(/<h1>(.*?)<\/h1>/g, "# $1\n")
-      .replace(/<h2>(.*?)<\/h2>/g, "## $1\n")
-      .replace(/<h3>(.*?)<\/h3>/g, "### $1\n")
-      .replace(/<h4>(.*?)<\/h4>/g, "#### $1\n")
-      .replace(/<h5>(.*?)<\/h5>/g, "##### $1\n")
-      .replace(/<h6>(.*?)<\/h6>/g, "###### $1\n")
+      .replace(/<h1>(.*?)<\/h1>/g, "# $1\n\n")
+      .replace(/<h2>(.*?)<\/h2>/g, "## $1\n\n")
+      .replace(/<h3>(.*?)<\/h3>/g, "### $1\n\n")
+      .replace(/<h4>(.*?)<\/h4>/g, "#### $1\n\n")
+      .replace(/<h5>(.*?)<\/h5>/g, "##### $1\n\n")
+      .replace(/<h6>(.*?)<\/h6>/g, "###### $1\n\n")
 
       // TODO: nested lists?
       // lists
@@ -42,12 +42,24 @@ function htmlToMD(html) {
       })
 
       // code blocks
-      .replace(/<code[^>]*>/g, (match) => {
+      .replace(/<code[^>]*>(.*?)<\/code>/gs, (match, codeContent) => {
         const languageMatch = match.match(/class="[^"]*language-([^"]*)"/);
-        return languageMatch ? "\n```" + languageMatch[1] + "\n" : "```";
+        const classMatch = match.match(/class="([^"]*)"/);
+        if (languageMatch) {
+          return "```" + languageMatch[1] + "\n" + codeContent + "\n```\n\n";
+        } else if (classMatch) {
+          return "```\n" + codeContent + "\n```\n\n";
+        } else {
+          return "`" + codeContent + "`";
+        }
       })
-      .replace(/<\/code[^>]*>/g, "```")
+
+      // remove html tags
       .replace(/<[^>]*>/g, "")
+
+      // unescape html entities
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
       .trim()
   );
 }
