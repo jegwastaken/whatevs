@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatGPT to MD
 // @namespace    http://tampermonkey.net/
-// @version      2024-03-30
+// @version      2024-03-31
 // @description  It's in the name!
 // @author       It's ah-me, Mario!
 // @match        https://chat.openai.com/*
@@ -30,15 +30,18 @@ function htmlToMD(html) {
       // TODO: nested lists?
       // lists
       .replace(/<ul>(<li>.*?<\/li>)*<\/ul>/gs, (match) => {
-        return match
-          .replace(/<li>(.*?)<\/li>/g, "- $1\n")
-          .replace(/<.*?>/g, "");
+        return (
+          match.replace(/<li>(.*?)<\/li>/g, "- $1\n").replace(/<.*?>/g, "") +
+          "\n"
+        );
       })
       .replace(/<ol>(<li>.*?<\/li>)*<\/ol>/gs, (match) => {
         let index = 1;
-        return match
-          .replace(/<li>(.*?)<\/li>/g, (m, item) => `${index++}. ${item}\n`)
-          .replace(/<.*?>/g, "");
+        return (
+          match
+            .replace(/<li>(.*?)<\/li>/g, (m, item) => `${index++}. ${item}\n`)
+            .replace(/<.*?>/g, "") + "\n"
+        );
       })
 
       // code blocks
