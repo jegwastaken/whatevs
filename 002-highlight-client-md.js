@@ -3,22 +3,11 @@ window.onload = function () {
 
   elements.forEach((element) => {
     let htmlString = element.innerHTML;
-    // yellow highlight
-    const openingSpan =
-      '<span style="background:rgba(255,255,0,.1);display:inline-block;">';
+    const regex = /&lt;MODELGENERATED&gt;([\s\S]*?)&lt;\/MODELGENERATED&gt;/g;
 
-    // replace ~~~~MODEL-GENERATED~~~~ with `openingSpan` tag
-    htmlString = htmlString.replace("~~~~MODEL-GENERATED~~~~", openingSpan);
     htmlString = htmlString.replace(
-      /~~~~\s*<span class="(.*?)">\s*MODEL<\/span>\s*-\s*<span class="(.*?)">GENERATED<\/span>\s*~~~~/g,
-      openingSpan
-    );
-
-    // replace ~~~~/MODEL-GENERATED~~~~ with </span>
-    htmlString = htmlString.replace("~~~~/MODEL-GENERATED~~~~", "</span>");
-    htmlString = htmlString.replace(
-      /~~~~\/\s*<span class="(.*?)">\s*MODEL<\/span>\s*-\s*<span class="(.*?)">GENERATED<\/span>\s*~~~~/g,
-      "</span>"
+      regex,
+      '<span style="background:rgba(255,255,0,.1);display:inline-block;">$1</span>'
     );
 
     element.innerHTML = htmlString;
