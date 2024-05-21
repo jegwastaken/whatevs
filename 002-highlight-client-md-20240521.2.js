@@ -14,7 +14,7 @@ window.onload = function () {
     regexes.forEach((regex) => {
       htmlString = htmlString.replace(
         regex,
-        '<span style="background:rgba(255,255,0,.15);display:inline-block;">$1</span>'
+        '<span style="background:rgb(0, 255, 255, 0.15);display:inline-block;">$1</span>'
       );
     });
 
